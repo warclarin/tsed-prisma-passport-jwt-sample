@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator tsed {
+  provider = "tsed-prisma"
+}
+
+model User {
+  /// @TsED.Groups("!creation")
+  /// Comment
+  id       Int    @id @default(autoincrement())
+  /// @TsED.Email()
+  /// @TsED.Description("User email. This email must be unique!")
+  email    String @unique
+  name     String
+  /// @TsED.Ignore(ctx.endpoint === true)
+  password String
+  /// @TsED.Groups("!creation")
+  posts    Post[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @db.LongText
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
