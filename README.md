@@ -45,11 +45,9 @@ Once registered a user, you can now login using it's email and password.
 ### Successful login response:
 ```
 {
-    "user": {
-        "id": 1,
-        "email": "trd.warren@gmail.com",
-        "name": "Warren Clarin"
-    },
+    "id": 1,
+    "email": "trd.warren@gmail.com",
+    "name": "Warren Clarin",
     "token": "xxxxxxxxxxxxx"
 }
 ```
