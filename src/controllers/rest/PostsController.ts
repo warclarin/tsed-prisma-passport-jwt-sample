@@ -15,7 +15,7 @@ export class PostsController {
 
   @Get("/")
   @Authenticate("jwt")
-  index(@Req("user") user: User) {
+  index(@Req("user") user: User): Promise<PostModel[]> {
     return this.postsService.findMany({
       where: {
         user
