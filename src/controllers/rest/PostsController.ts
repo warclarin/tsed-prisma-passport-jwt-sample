@@ -1,11 +1,12 @@
 import { User } from "@prisma/client";
-import { Req } from "@tsed/common";
+import { Req, UseBefore } from "@tsed/common";
 import { Controller, Inject } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
 import { Authenticate } from "@tsed/passport";
 import { BodyParams, PathParams } from "@tsed/platform-params";
 import { PostModel } from "@tsed/prisma";
 import { Delete, Get, Post, Put } from "@tsed/schema";
+import { OwnPostMiddleware } from "../../middlewares/OwnPostMiddleware";
 import { PostsService } from "../../services/PostsService";
 
 @Controller("/posts")
@@ -34,36 +35,22 @@ export class PostsController {
 
   @Get("/:id")
   @Authenticate("jwt")
-  async show(@Req("user") user: User, @PathParams("id") id: number): Promise<PostModel | null> {
-    const post = await this.postsService.findFirst({ where: { user, id } });
-
-    if (!post) {
-      throw new NotFound("Post not found");
-    }
-
-    return post;
+  @UseBefore(OwnPostMiddleware)
+  show(@Req("user") user: User, @PathParams("id") id: number): Promise<PostModel | null> {
+    return this.postsService.findFirst({ where: { user, id } });
   }
 
   @Put("/:id")
   @Authenticate("jwt")
-  async update(@Req("user") user: User, @PathParams("id") id: number, @BodyParams() data: any): Promise<PostModel> {
-    const post = await this.postsService.findFirst({ where: { user, id } });
-    if (!post) {
-      throw new NotFound("Post not found");
-    }
-
+  @UseBefore(OwnPostMiddleware)
+  update(@Req("user") user: User, @PathParams("id") id: number, @BodyParams() data: any): Promise<PostModel> {
     return this.postsService.update({ data, where: { id } });
   }
 
   @Delete("/:id")
   @Authenticate("jwt")
-  async delete(@Req("user") user: User, @PathParams("id") id: number): Promise<PostModel> {
-    const post = await this.postsService.findFirst({ where: { user, id } });
-
-    if (!post) {
-      throw new NotFound("Post not found");
-    }
-
+  @UseBefore(OwnPostMiddleware)
+  delete(@Req("user") user: User, @PathParams("id") id: number): Promise<PostModel> {
     return this.postsService.delete({ where: { id } });
   }
 }

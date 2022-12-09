@@ -40,14 +40,14 @@ export class LocalProtocol implements OnVerify {
   }
 
   createAuthUserModel(user: UserModel, token: string): AuthUserModel {
-    const userLogin = new AuthUserModel()
-    
-    userLogin.id = user.id
-    userLogin.name = user.name
-    userLogin.email = user.email
-    userLogin.token = token
+    const userLogin = new AuthUserModel();
 
-    return userLogin
+    userLogin.id = user.id;
+    userLogin.name = user.name;
+    userLogin.email = user.email;
+    userLogin.token = token;
+
+    return userLogin;
   }
 
   createJwt(user: UserModel): string {
